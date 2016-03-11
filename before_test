@@ -1,0 +1,561 @@
+Before Test
+
+http://b.joaoubaldo.com/linux/rhcsa-my-study-guide/
+
+RHCSA Sample Question and Answer
+http://www.certdepot.net/rhcsa-sample-exam-1/
+
+RHCSA认证培训+考试七天实录
+
+http://blog.51cto.com/tag-rhcsa.html
+
+Re: [疑惑] rhce考題的難易度
+
+https://www.ptt.cc/bbs/License/M.1211351490.A.E99.html
+
+
+
+一個不細心就會犯下大錯。比如你做好一個服務，測試完全正確，但是你忘記了設置開機启動。那麼考試內容就为0分，因为考試時間到後電腦會全部關機，然後重启進行測分，你連服務都沒有開启，肯定是0分。
+
+
+
+Configure systems to launch virtual machines at boot
+
+#virsh autostart MACHINENAME
+yum grouplist | grep -i virt
+
+yum groupinstall "GROUPNAME"
+
+yum install virt-manager
+
+
+
+#man -k keyword*
+
+
+
+8. Create a /srv/ftp directory. Restore the default SELinux file contexts on that directory.
+#ls -Z (checking selinux status of a folder)
+#restorecon -F /srv/ftp
+
+-F --force
+
+
+
+/etc/skel = default user profile load location (cp -ar)
+
+
+***server must have network services available through the network ( ssh , ftp , http ,etc.etc. )
+
+**在iptables配置中如需要拒绝访问，请使用REJECT（考试过程中iptables默认策略均为ACCEPT）。一定不能用DROP，否则用脚本判卷会无效，因为DROP没有回应。
+
+
+
+# service iptables save
+
+# «一定要 保存iptables的配置，否则重启后失效。
+
+
+
+you can switch the system into permissive mode with the following command:
+
+echo 0 >/selinux/enforce
+
+To switch back into enforcing mode:
+
+echo 1 >/selinux/enforce
+
+
+
+暂时关闭selinux的方式会导致重启进入系统时，系统需要重新打标，会浪费时间，可以采用在单用户模式下删除root密码的方式，然后init  3 进入系统，再修改root的密码。
+
+passwd  -d  root    # 删除root的密码， -d 一定要指定用户 root
+
+init  3 进入系统
+
+直接输入用户名root后进入系统。
+
+一定要记得进入系统后第一件事就是修改密码。
+
+
+1.   请将ip_forward功能打开，并永久生效
+
+# vim /etc/sysctl.conf (change net.ipv4.ip_forward = 1)
+
+# sysctl -p #-p 立即生效。
+
+# sysctl -a | grep ip_forward
+
+
+Remove a logical volume mapper
+
+#dmsetup remove /dev/mapper/folder
+
+
+
+[root@www ~]# chattr [+-=][ASacdistu] 檔案或目錄名稱選項與參數：+   ：增加某一個特殊參數，其他原本存在參數則不動。-   ：移除某一個特殊參數，其他原本存在參數則不動。=   ：設定一定，且僅有後面接的參數A  ：當設定了 A 這個屬性時，若你有存取此檔案(或目錄)時，他的存取時間 atime     將不會被修改，可避免I/O較慢的機器過度的存取磁碟。這對速度較慢的電腦有幫助S  ：一般檔案是非同步寫入磁碟的(原理請參考<a>第五章sync</a>的說明)，如果加上 S 這個     屬性時，當你進行任何檔案的修改，該更動會『同步』寫入磁碟中。a  ：當設定 a 之後，這個檔案將只能增加資料，而不能刪除也不能修改資料，只有root      才能設定這個屬性。 c  ：這個屬性設定之後，將會自動的將此檔案『壓縮』，在讀取的時候將會自動解壓縮，     但是在儲存的時候，將會先進行壓縮後再儲存(看來對於大檔案似乎蠻有用的！)d  ：當 dump 程序被執行的時候，設定 d 屬性將可使該檔案(或目錄)不會被 dump 備份i  ：這個 i 可就很厲害了！他可以讓一個檔案『不能被刪除、改名、設定連結也無法     寫入或新增資料！』對於系統安全性有相當大的助益！只有 root 能設定此屬性s  ：當檔案設定了 s 屬性時，如果這個檔案被刪除，他將會被完全的移除出這個硬碟     空間，所以如果誤刪了，完全無法救回來了喔！u  ：與 s 相反的，當使用 u 來設定檔案時，如果該檔案被刪除了，則資料內容其實還     存在磁碟中，可以使用來救援該檔案喔！
+if bootup fs fucked up. use "mount -w -o remount /"  to gain control for /etc/fstab 
+Question 
+Add 3 users: harry, natasha, tom. 
+The requirements: The Additional group of the two users: harry, Natasha is the admin group. 
+The user: tom’s login shell should be non-interactive.
+
+
+
+Answers:    
+# useradd –G admin harry
+# useradd –G admin natasha
+# useradd –s /sbin/nologin tom
+# id harry;id Natasha   (Show additional group)
+# cat /etc/passwd         (Show the login shell)
+
+
+
+cat /etc/group ---for group and group member check
+
+
+
+Question 2
+Create a catalog under /home named admins. Its respective group is requested to be the admin group. The group users could read and write, while other users are not allowed to access it. The files created by users from the same group should also be the admin group. 
+
+Answers:
+# cd /home
+# mkdir admins 
+# chown :admin admins
+# chmod 770 admins
+# chmod g+s admins
+
+
+
+the options g+s are as follows:
+g - the permissions that other users in the file's group have for it 
+s - set user or group ID on execution
+
+
+
+Question 3
+
+Configure a task: plan to run echo hello command at 14:23 every day.
+Answers1:
+# which echo (to find the path)
+# crontab –e
+
+          23 14 * * * /bin/echo hello
+
+# crontab –l     (Verify)
+
+
+
+The following line runs the user Perl script test.pl every two hours, at midnight, 02:00, 04:00, 06:00, 08:00 and so on:
+
+  0 */2 * * * /home/username/test.pl
+
+Answers2: (incorrect because it only run once today)
+#at 14:23 
+   echo hello
+   ctl + D (to log out)
+#atq (at que) (Verify)
+at -c JOB_NUMBER (check job detail)
+
+Question 4 
+Find the files owned by harry, and copy it to catalog: /opt/dir
+
+Answers:
+
+  # cd /opt/
+  # mkdir dir
+
+  # find / -user harry -exec cp -r {} /opt/dir/ \;
+
+
+
+該範例中特殊的地方有 {} 以及 \; 還有 -exec 這個關鍵字，這些東西的意義為：
+
+{} 代表的是『由 find 找到的內容』，如上圖所示，find 的結果會被放置到 {} 位置中；
+-exec 一直到 \; 是關鍵字，代表 find 額外動作的開始 (-exec) 到結束 (\;) ，在這中間的就是 find 指令內的額外動作。 在本例中就是『 ls -l {} 』囉！
+因為『 ; 』在 bash 環境下是有特殊意義的，因此利用反斜線來跳脫。
+
+Question 5
+Find the rows that contain abcde from file /etc/testfile, and write it to the file/tmp/testfile, and the sequenceis requested as the same as /etc/testfile.
+
+Answers:
+
+grep ‘abcde’ /etc/testfile > /tmp/testfile
+
+
+
+
+
+Question 6
+Create a 2G swap partition which take effect automatically at boot-start, and it should not affect the original swap partition.
+
+
+
+Swap space in Linux is used when the amount of physical memory (RAM) is full. If the system needs more memory resources and the RAM is full, inactive pages in memory are moved to the swap space. 
+
+Answers:
+
+# fdisk /dev/sda
+  p      (check Partition table)
+  n      (create new partition: press e to create extended partition, press p to create the main partition, and the extended partition is further divided into logical partitions)
+
+
+
+一般來說建立分割槽的形式會有底下的數種狀況：
+
+1-4 號尚有剩餘，且系統未有 extended：
+此時會出現讓你挑選 Primary / Extended 的項目，且你可以指定 1~4 號間的號碼；
+
+1-4 號尚有剩餘，且系統有 extended：
+此時會出現讓你挑選 Primary / Logical 的項目；若選擇 p 則你還需要指定 1~4 號間的號碼； 若選擇 l(L的小寫) 則不需要設定號碼，因為系統會自動指定邏輯分割槽的檔名號碼；
+
+1-4 沒有剩餘，且系統有 extended：
+此時不會讓你挑選分割槽類型，直接會進入 logical 的分割槽形式。
+  Enter
+  +2G     
+  t  (change a partition's system id)
+
+  (x) (Choose partition number that just created) 
+  L (Hex code (type L to list codes))
+
+  82 (Linux swap / Solaris)
+
+  w (write table to disk and exit)
+
+
+
+fdisk /dev/sda
+partprobe (
+
+mkswap /dev/sda(x) (sets up a Linux swap area on a device or in a file.)
+
+(Copy UUID)
+swapon –a (enable devices and files for paging and swapping)
+
+vim /etc/fstab
+UUID=(Paste copied UUID) swap swap defaults 0 0
+
+
+
+將 /etc 底下的可用的磁碟容量以易讀的容量格式顯示[root@www ~]# df -h /etcFilesystem            Size  Used Avail Use% Mounted on/dev/hdc2             9.5G  3.7G  5.4G  41% / 
+Question 7
+Create a user named alex, and the user id should be 1234, and the password should be alex111.
+
+
+
+Answers:
+# useradd –u 1234 alex
+# passwd alex
+  alex111
+  alex111
+
+
+
+Question 8
+Install a FTP server, and request to anonymous download from /var/ftp/pub catalog. (it needs you to configure yum direct to the already existing file server. )
+
+Answers:
+
+--------------------------------------------------------------
+
+yum源基本配置：
+
+所有的光盘中的软件包已经在 ftp://server1.domain40.example.com/pub/X86_64/Server
+
+你可以用真实机来验证虚拟机中的考试实验是否正确完成。
+
+配置yum源   /etc/yum.repos.d/*.repo   # 一定要是*.repo 结尾
+
+要是 /etc/yum.repos.d/ 中原来有 *.repo 的文件最好不要删除，而是改一下名称，备份下，可以当做参考。  mv  abc.repo   abc.repo.bak
+
+vim /etc/yum.repo.d/rhel6.repo
+
+#  baseurl=  # 这是最重要的一行直接拷贝过来
+
+[rhel6]
+
+name=”rhel6”
+
+baseurl= ftp://server1.domain40.example.com/pub/X86_64/Server
+
+enables=1
+
+gpgcheck=0  # 最好写0  不需要导入公钥
+
+然后需要测试yum下
+
+yum  makecahce
+
+安装lftp 和 firefox来测试yum。（lftp 和 firefox 默认没有安装）
+
+[root@station yum.repos.d]# yum -y install lftp
+
+---------------------------------------------------------------
+
+# cd /etc/yum.repos.d
+# vim local.repo
+      [local] 
+      name=local.repo
+
+      baseurl=file:///mnt
+      enabled=1
+      gpgcheck=0
+
+  # yum makecache  # yum install -y vsftpd
+  # service vsftpd restart
+  # chkconfig vsftpd on
+  # chkconfig –-list vsftpd
+  # vim /etc/vsftpd/vsftpd.conf
+       anonymous_enable=YES
+
+use ftp client "lftp" to test
+iptables -I INPUT -m multiport -p tcp --dport 20:21 -j ACCEPT
+after service iptables restart --> modprobe nf_conntrack_ftp
+At this point, you should be able to connect without a problem. However, to keep this module loaded whenever iptables is running, you will need to add it to /etc/sysconfig/iptables-config: IPTABLES_MODULES="nf_conntrack_ftp"
+
+use lsmod | grep ftp
+
+Question 9
+Configure a HTTP server, which can be accessed through 
+http://station.domain40.example.com 
+Please download the released page from
+
+http://ip/dir/example.html.
+
+
+
+Answers:
+  # yum install –y httpd
+  # chkconfig httpd on
+  # cd /var/www/html
+
+
+
+  # wget http://ip/dir/example.html
+  # cp example.com index.html
+
+
+  # vim /etc/httpd/conf/httpd.conf
+       NameVirtualHost 192.168.0.254:80
+       <VirtualHost 192.168.0.254:80>
+         DocumentRoot /var/www/html/
+         ServerName station.domain40.example.com
+        </VirtualHost>
+
+iptables -I INPUT -p tcp --dport 80 -j ACCEPT  iptables-save
+
+
+
+Question 10
+Configure the verification mode of your host account and the password as LDAP. And it can login successfully through ldapuser40. the password is set as “password”. And the certificate can be downloaded from <a>http://ip/dir/ldap.crt</a>. After the user logs on , the user has no host directory unless you configure the autofs in the following questions.
+
+Answers:
+
+
+# yum groupinstall directory-client  (1.krb5-workstation  2.pam-krb5  3.sssd)
+# system-config-authentication
+  1.User Account Database: LDAP
+  2.LDAP Search Base DN: dc=example,dc=com
+  3.LDAP Server: ldap://instructor.example.com  (In domain form, not write IP)
+  4.Download CA Certificate
+  5.Authentication Method: LDAP password
+  6.Apply
+getent passwd ldapuser40
+
+
+
+http://yttitan.blog.51cto.com/70821/940617
+
+***practice this first https://www.youtube.com/watch?v=jQL-X8xQi20****
+
+
+
+
+
+Question 11
+Configure autofs to make sure after login successfully, it has the home directory autofs, which is shared as /rhome/ldapuser40 at the ip: 172.24.40.10. and it also requires that, other ldap users can use the home directory normally.
+
+
+
+Answers:
+# chkconfig autofs on          
+# cd /etc/ 
+# vim /etc/auto.master  
+       /rhome /etc/auto.ldap
+# cp auto.misc  auto.ldap
+# vim auto.ladp
+      ldapuser40   -rw,soft,intr   172.24.40.10:/rhome/ldapuser40
+       *             -rw,soft,intr   172.16.40.10:/rhome/&
+# service autofs stop
+# server autofs start
+# showmount –e 172.24.40.10
+# su – ladpuser40
+
+
+Question 12
+Configure the system synchronous as 172.24.40.10.
+
+Answers:
+Graphical Interfaces:
+   System–>Administration–>Date & Time
+
+OR
+
+   # system-config-date
+
+
+
+Question 13
+Change the logical volume capacity named vo from 190M to 300M. and the size of the floating range should set between 280 and 320. (This logical volume has been mounted in advance.)
+
+Answers:
+  # vgdisplay     (Check the capacity of vg, if the capacity is not enough, need to create pv , vgextend , lvextend)
+  # lvdisplay      (Check lv)
+  # lvextend -L +100M /dev/vg2/lv2 (extend LV)
+
+  verify with lvdisplay
+  # resize2fs /dev/vg2/lv2 (完整的將 LV 的容量擴充到整個 filesystem. 如果沒有 size 的話，那麼預設使用整個 partition的容量來處理！)
+
+  mount –av   (Verify)
+
+  df -H   
+
+  ———————————————————————————————————————-
+(Decrease lvm)
+
+   
+
+  # mount (check how target fs is being mount)
+
+  # umount /
+
+  # e2fsck –f /dev/vg1/lvm02
+
+  # resize2fs –f /dev/vg1/lvm02 100M (**make the total filesystem size as 100M**)
+
+  # lvreduce –L 100M –n /dev/vg1/lv02 (**make the total Logical volume size as 100M**)
+
+  # touch /.autorelabel (fix SElinux problem)
+
+  # mount –av 
+  # lvdisplay (Verify)
+
+
+
+(relabel is fs "e2label /dev/sda6 /work")
+
+
+
+Question 14
+Create a volume group, and set 16M as a extends. And divided a volume group containing 50 extends on volume group lv, make it as ext4 file system, and mounted automatically under /mnt/data. 
+
+Answers:
+  # pvcreate /dev/sda7 /dev/sda8 
+  # vgcreate –s 16M vg1 /dev/sda7 /dev/sda8 (-s ：後面接 PE 的大小 (size) ，單位可以是 m, g, t (大小寫均可))
+
+  # lvcreate –L 50 –n lvm02 (****50 means 50 PEs****)
+
+  # mkfs.ext4 /dev/vg1/lvm02
+  # blkid /dev/vg1/lv1
+
+UUID=xxxxxxxx   /mnt/data   ext4    defaults    0 0
+  # vim /etc/fstab
+  # mkdir –p /mnt/data
+
+  # touch /.autorelabel
+
+  # mount –av     
+
+
+
+(How to reduce VG)
+
+pvresize --setphysicalvolumesize 40G /dev/sda1
+
+vgreduce --removemissing
+
+
+
+Question 15
+Upgrading the kernel as 2.6.36.7.1, and configure the system to Start the default kernel, keep the old kernel available. 
+
+Answers:
+  # cat /etc/grub.conf
+  # cd /boot 
+  # lftp it 
+  # get dr/dom/kernel-xxxx.rpm
+  # rpm –ivh kernel-xxxx.rpm
+  # vim /etc/grub.conf
+       default=0
+
+
+
+Question 16
+Create a 512M partition, make it as ext4 file system, mounted automatically under /mnt/data and which take effect automatically at boot-start.
+
+
+
+Answers:
+  # fdisk /dev/vda 
+  n 
+  +512M 
+  w 
+  # partprobe /dev/vda 
+  # mkfs.ext4 /dev/vda5 
+  # mkdir -p /data 
+  # vim /etc/fstab  
+  /dev/vda5 /data ext4 defaults 0 0
+  # mount -av
+
+
+
+
+
+Question 17
+Create a volume group,and set 8M as a extends. Divided a volume group containing 50 extends on volume group lv (lvshare), make it as ext4 file system, and mounted automatically under /mnt/data. And the size of the floating range should set between 380M and 400M.
+
+Answers:
+  # fdisk 
+  # partprobe 
+  # pvcreate /dev/vda6
+  # vgcreate -s 8M vg1 /dev/vda6 
+  # lvcreate -L 50 -n lvshare vg1 
+  # mkfs.ext4 /dev/vg1/lvshare
+  # mkdir –p /mnt/data
+  # vim /etc/fstab 
+  /dev/vg1/lvshare /mnt/data ext4 defaults 0 0
+  # mount -a
+  # df -h
+
+
+
+Question 18
+Download <a>ftp://192.168.0.254/pub/boot.iso</a> to /root, and mounted automatically under  
+/media/cdrom and which take effect automatically at boot-start.
+
+Answers:
+  # cd /root; wget <a>ftp://192.168.0.254/pub/boot.iso</a>
+  # mkdir -p /media/cdrom
+  # vim /etc/fstab 
+  /root/boot.iso /media/cdrom iso9660 defaults,loop 0 0
+  # mount -av
+
+  mount [-t vfstype] [-o options] device dir
+
+
+
+Question 19
+Add admin group and set gid=600
+
+Answers:
+  # groupadd –g 600 admin
+
+
+
+Question 20
+Add user: user1, set uid=601. Password: redhat. The user’s login shell should be non-interactive.
+
+Answers:
+  # useradd –u 601 –s /sbin/nologin user1
+  # passwd user1
+  redhat
