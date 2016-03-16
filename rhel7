@@ -1,0 +1,43 @@
+Reboot
+
+-        Start system and at GRUB2 boot menu, press ‘e’ to edit default boot item.
+-        Scroll down to locate ‘rhgb quiet’ and replace it with ‘rd.break enforcing=0’
+-        Press Ctrl-x to start
+-        Remount / File System with read and write option
+# mount –o remount,rw /sysroot
+-        To access system 
+# chroot /sysroot
+-        Change root’s password
+# passwd
+-        SELinux relabeling
+# touch /.autorelabel
+-        Reboot System
+# exit, exit (or Ctrl-b, Ctrl-b)
+
+Change the hostname to mycentos.example.com
+
+# hostnamectl set-hostname mycentos.example.com
+
+Set the default target to boot into X Window level (previously level 5).
+
+# systemctl set-default graphical.target
+#systemctl isolate multi-user.target 
+
+Create a cron job running as root, starting at 11PM every day and writing a report on daily system resource consumption in the /log file.
+
+
+# crontab -e
+00 23 * * * /usr/bin/sar -A > /log
+
+
+Create a logical volume of 200MB called lv_swap2 and add it permanently to the current swap space.
+
+# lvcreate - -size 200M - - name lv_swap2 /dev/vg
+# mkswap /dev/vg/lv_swap2
+# swapon /dev/vg/lv_swap2
+vi /etc/fstab
+/dev/vg/lv_swap2 swap swap defaults 0 0
+
+
+
+
