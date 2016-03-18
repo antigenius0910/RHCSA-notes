@@ -32,6 +32,9 @@ Create a cron job running as root, starting at 11PM every day and writing a repo
 
 Create a logical volume of 200MB called lv_swap2 and add it permanently to the current swap space.
 
+
+
+
 # lvcreate - -size 200M - - name lv_swap2 /dev/vg
 # mkswap /dev/vg/lv_swap2
 # swapon /dev/vg/lv_swap2
