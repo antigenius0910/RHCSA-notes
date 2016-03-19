@@ -35,7 +35,7 @@ Create a logical volume of 200MB called lv_swap2 and add it permanently to the c
 
 
 
-# lvcreate - -size 200M - - name lv_swap2 /dev/vg
+# lvcreate --size 200M --name lv_swap2 /dev/rhel
 # mkswap /dev/vg/lv_swap2
 # swapon /dev/vg/lv_swap2
 vi /etc/fstab
