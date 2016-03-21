@@ -45,11 +45,29 @@ Create a logical volume of 200MB called lv_swap2 and add it permanently to the c
 # swapon /dev/rhel/lv_swap2
 ------------------------------------------
 2.
-dd if=/dev/zero of=/awapfile bs=1M count=200
-mkswap /awapfile 
-swapon /awapfile
-chmod 600 awapfile
+# dd if=/dev/zero of=/awapfile bs=1M count=200
+# mkswap /awapfile 
+# swapon /awapfile
+# chmod 600 awapfile
 -------------------------------------------
+3. 
+# dd if=/dev/zero of=/virtualfs bs=1M count=200
+# losetup /dev/loop0 (find if something exsist already, if yes change to loop1, loop2...)
+# losetup /dev/loop0 /virtualfs
+# fdisk /dev/loop0
+Create one primary bootable partition on the device. 
+his can be done by using the following key press combination: 
+
+n p 1 Enter Enter a 1 p w
+
+n p 1 t 8e a 1 p w
+
+# pccreate /dev/loop0
+# vgextend rhel /dev/loop0
+# lvcreate -L 200M -n lv_swap2 rhel
+# mkswap /dev/rhel/lv_swap2
+# swapon /dev/rhel/lv_swap2
+
 vi /etc/fstab
 /dev/mapper/rhel-lv_swap2 swap swap defaults 0 0
 or
@@ -60,15 +78,9 @@ Configure a virtual console.(What for?)
 
 grubby –update-kernel=ALL - - args=”console=ttyS0″
 
-Assign the same SELinux contexts used by the home directories to the /xfs directory permanently.
-
-# yum install -y setroubleshoot-server
-# semanage fcontext -a -t user_home_t “/xfs(/.*)?”
-# restorecon -R /xfs 
-
 How to create local repo
 
-# mount -o loop /dev/sr0  /mnt
+# mount -o loop /dev/cdrom  /mnt
 # cp /mnt/media.repo /etc/yum.repos.d/rhel7dvd.repo
 # chmod 644 /etc/yum.repos.d/rhel7dvd.repo
 vi /etc/yum/repos.d/rhel7dvd.repo
@@ -79,7 +91,22 @@ baseurl=file:///mnt/
 # yum list --noplugin
 # yum update --noplugin
 
+Assign the same SELinux contexts used by the home directories to the /xfs directory permanently. (??)
 
+# yum install -y setroubleshoot-server
+# semanage fcontext -a -t user_home_t “/xfs(/.*)?”
+# restorecon -R /xfs 
+
+Create an ext4 file system on a new logical volume of 100MB called lv_ext4. Mount it permanently under the /ext4 directory.
+Copy the files previously created into this new space.
+
+
+# lvcreate –size 100M –name lv_ext4 /dev/vg
+# mkfs.ext4 /dev/vg/lv_ext4
+# mkdir /ext4
+# vi /etc/fstab
+/dev/vg/lv_ext4 /ext4 ext4 defaults 1 2
+# cp -p /xfs/.f* /ext4
 
 
 
