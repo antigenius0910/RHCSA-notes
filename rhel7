@@ -34,7 +34,8 @@ Create a cron job running as root, starting at 11PM every day and writing a repo
 
 
 Create a logical volume of 200MB called lv_swap2 and add it permanently to the current swap space.
-
+-------------------------------------------
+1.
 # swapoff -v /dev/rhel/swap
 # lvm lvreduce /dev/rhel/swap -L -200M
 # mkswap /dev/rhel/swap
@@ -42,8 +43,41 @@ Create a logical volume of 200MB called lv_swap2 and add it permanently to the c
 # lvcreate -L 200M -n lv_swap2 rhel
 # mkswap /dev/rhel/lv_swap2
 # swapon /dev/rhel/lv_swap2
+------------------------------------------
+2.
+dd if=/dev/zero of=/awapfile bs=1M count=200
+mkswap /awapfile 
+swapon /awapfile
+chmod 600 awapfile
+-------------------------------------------
 vi /etc/fstab
 /dev/mapper/rhel-lv_swap2 swap swap defaults 0 0
+or
+/awapfile                 swap swap defaults 0 0
+
+
+Configure a virtual console.(What for?)
+
+grubby –update-kernel=ALL - - args=”console=ttyS0″
+
+Assign the same SELinux contexts used by the home directories to the /xfs directory permanently.
+
+# yum install -y setroubleshoot-server
+# semanage fcontext -a -t user_home_t “/xfs(/.*)?”
+# restorecon -R /xfs 
+
+How to create local repo
+
+# mount -o loop /dev/sr0  /mnt
+# cp /mnt/media.repo /etc/yum.repos.d/rhel7dvd.repo
+# chmod 644 /etc/yum.repos.d/rhel7dvd.repo
+vi /etc/yum/repos.d/rhel7dvd.repo
+enabled=1
+baseurl=file:///mnt/
+# yum clean all
+# subscription-manager clean
+# yum list --noplugin
+# yum update --noplugin
 
 
 
