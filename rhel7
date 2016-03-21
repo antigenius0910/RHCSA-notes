@@ -1,4 +1,4 @@
-Reboot
+Cahnge root passwd
 
 -        Start system and at GRUB2 boot menu, press ‘e’ to edit default boot item.
 -        Scroll down to locate ‘rhgb quiet’ and replace it with ‘rd.break enforcing=0’
@@ -13,7 +13,10 @@ Reboot
 # touch /.autorelabel
 -        Reboot System
 # exit, exit (or Ctrl-b, Ctrl-b)
-
+---------------------------------------
+$ sudo dhclient -r eth0
+$ sudo dhclient eth0
+--------------------------------------
 Change the hostname to mycentos.example.com
 
 # hostnamectl set-hostname mycentos.example.com
@@ -40,7 +43,7 @@ Create a logical volume of 200MB called lv_swap2 and add it permanently to the c
 # mkswap /dev/rhel/lv_swap2
 # swapon /dev/rhel/lv_swap2
 vi /etc/fstab
-/dev/mapper/lv_swap2 swap swap defaults 0 0
+/dev/mapper/rhel-lv_swap2 swap swap defaults 0 0
 
 
 
