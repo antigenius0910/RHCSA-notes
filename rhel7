@@ -112,5 +112,18 @@ Copy the files previously created into this new space.
 /dev/mapper/rhel-lv_ext4 /ext4 ext4 defaults 1 2
 # cp -p /xfs/.f* /ext4 (?)
 
+Write a Bash script called prog.sh in the /root directory that creates 40 files of 2MB each with the fallocate command 
+in the mounted /xfs directory. Each file has got a name as follows: .file_N where N is a number from 1 to 40.
 
+cd /root
+vi prog.sh
+-------
+#!/bin/bash
+cd /xfs
+for ((i = 1; i < 40+1; i++)) ; do
+fallocate -l 2M ."file_$i"
+done
+——————–
+# chmod u+x prog.sh
+# ./prog.sh
 
